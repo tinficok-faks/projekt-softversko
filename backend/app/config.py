@@ -1,0 +1,15 @@
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    DATABASE_URL: str = "sqlite:///./ticketing.db"
+    SECRET_KEY: str = "your-secret-key-change-in-production-min-32-chars"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    API_TITLE: str = "Helpdesk Ticketing System"
+    API_VERSION: str = "1.0.0"
+    DEBUG: bool = False
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
+
+settings = Settings()
