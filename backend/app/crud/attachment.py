@@ -1,6 +1,6 @@
 from typing import Optional, List
 from sqlmodel import Session, select
-from app.models import Attachment, AttachmentRead
+from app.models import Attachment
 
 def create_attachment(session: Session, file_name: str, file_path: str, ticket_id: str) -> Attachment:
     attachment = Attachment(
