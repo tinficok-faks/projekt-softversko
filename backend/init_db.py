@@ -3,6 +3,7 @@ from app.config import settings
 from app.models import User
 from app.database import create_db_and_tables
 
+
 def init_sample_data():
     engine = create_engine(
         settings.DATABASE_URL,
