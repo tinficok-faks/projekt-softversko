@@ -12,9 +12,7 @@ from app.crud.ticket import (
     get_user_tickets,
     get_assigned_tickets,
     get_all_tickets,
-    update_ticket_status,
-    update_ticket_priority,
-    assign_ticket
+    update_ticket
 )
 from app.crud.attachment import create_attachment, get_ticket_attachments
 
