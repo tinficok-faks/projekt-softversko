@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Index
+from sqlalchemy import Column, String, Index
 import uuid
 
 class UserBase(SQLModel):

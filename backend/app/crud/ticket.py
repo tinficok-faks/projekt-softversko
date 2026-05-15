@@ -68,3 +68,58 @@ def update_ticket(session: Session, ticket_id: str, ticket_update: TicketUpdate)
     session.commit()
     session.refresh(ticket)
     return ticket
+
+def update_ticket_status(session: Session, ticket_id: str, status: str) -> Optional[Ticket]:
+    ticket = get_ticket_by_id(session, ticket_id)
+    if ticket:
+        ticket.status = status
+        session.add(ticket)
+        session.commit()
+        session.refresh(ticket)
+    return ticket
+
+def update_ticket_priority(session: Session, ticket_id: str, priority: str) -> Optional[Ticket]:
+    ticket = get_ticket_by_id(session, ticket_id)
+    if ticket:
+        ticket.priority = priority
+        session.add(ticket)
+        session.commit()
+        session.refresh(ticket)
+    return ticket
+
+def assign_ticket(session: Session, ticket_id: str, support_id: str) -> Optional[Ticket]:
+    ticket = get_ticket_by_id(session, ticket_id)
+    if not ticket:
+        return None
+    ticket.assigned_to_id = support_id
+    ticket.status = "assigned"
+    session.add(ticket)
+    session.commit()
+    session.refresh(ticket)
+    return ticket
+
+def delete_ticket(session: Session, ticket_id: str) -> bool:
+    ticket = get_ticket_by_id(session, ticket_id)
+    if ticket:
+        session.delete(ticket)
+        session.commit()
+        return True
+    return False
+
+def get_ticket_statistics(session: Session) -> dict:
+    total = len(session.exec(select(Ticket)).all())
+    assigned = len(session.exec(select(Ticket).where(Ticket.status == "assigned")).all())
+    solved = len(session.exec(select(Ticket).where(Ticket.status == "solved")).all())
+    new = len(session.exec(select(Ticket).where(Ticket.status == "new")).all())
+    seen = len(session.exec(select(Ticket).where(Ticket.status == "seen")).all())
+    urgent = len(session.exec(select(Ticket).where(Ticket.priority == "urgent")).all())
+    
+    return {
+        "total_tickets": total,
+        "new_tickets": new,
+        "seen_tickets": seen,
+        "assigned_tickets": assigned,
+        "solved_tickets": solved,
+        "urgent_tickets": urgent,
+        "avg_time_to_solve": None
+    }
