@@ -1,3 +1,4 @@
+from typing import Optional
 from sqlmodel import Session, select
 from app.models import User, UserCreate, UserRead
 from app.security import hash_password, verify_password
@@ -9,6 +10,20 @@ def create_user(session: Session, user_create: UserCreate) -> User:
         password=hash_password(user_create.password),
         role="user"
     )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
+
+def get_all_users(session: Session, skip: int = 0, limit: int = 100) -> list[User]:
+    return session.exec(select(User).offset(skip).limit(limit)).all()
+
+
+def update_user_role(session: Session, user_id: str, role: str) -> Optional[User]:
+    user = get_user_by_id(session, user_id)
+    if not user:
+        return None
+    user.role = role
     session.add(user)
     session.commit()
     session.refresh(user)

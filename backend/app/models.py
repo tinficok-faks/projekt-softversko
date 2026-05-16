@@ -1,7 +1,7 @@
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Index
+from sqlalchemy import Column, String, Index
 import uuid
 
 class UserBase(SQLModel):
@@ -14,7 +14,7 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     __tablename__ = "user"
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(SQLModel):
     username: str
@@ -48,8 +48,8 @@ class Ticket(TicketBase, table=True):
         Index('idx_assigned_to', 'assigned_to_id'),
     )
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by_id: str = Field(foreign_key="user.id", index=True)
     assigned_to_id: Optional[str] = Field(default=None, foreign_key="user.id", index=True)
     created_by_user: Optional["User"] = Relationship(
@@ -110,7 +110,7 @@ class Attachment(AttachmentBase, table=True):
     __tablename__ = "attachment"
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     ticket_id: str = Field(foreign_key="ticket.id", index=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     ticket: Optional["Ticket"] = Relationship(
         sa_relationship_kwargs={"overlaps": "attachments"}
     )
