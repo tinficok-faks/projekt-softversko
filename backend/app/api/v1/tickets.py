@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from sqlmodel import Session
 from app.models import User, Ticket, TicketCreate, TicketUpdate, TicketRead, TicketAssign, AttachmentRead
 from app.database import get_session
-from app.dependencies import get_current_user, get_current_support
+from app.dependencies import get_current_user, get_current_support, get_current_admin
 from app.crud.ticket import (
     create_ticket,
     get_ticket_by_id,
@@ -93,6 +93,11 @@ def list_tickets(
     else:
         return get_all_tickets(session, status, priority, skip, limit, "created_at")
 
+@router.patch("/{ticket_id}/assign", response_model=TicketRead)
+def assign_ticket(
+    ticket_id: str,
+    ticket_assign: TicketAssign,
+    current_admin: User = Depends(get_current_admin),
 @router.patch("/{ticket_id}/status")
 
 def update_status(
@@ -107,6 +112,19 @@ def update_status(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Ticket not found"
         )
+    ticket.assigned_to_id = ticket_assign.support_user_id
+    session.add(ticket)
+    session.commit()
+    session.refresh(ticket)
+    return ticket
+
+@router.patch("/{ticket_id}", response_model=TicketRead)
+def update_existing_ticket(
+    ticket_id: str,
+    ticket_update: TicketUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
     if current_user.role == "support":
         if ticket.assigned_to_id != current_user.id:
             raise HTTPException(
@@ -135,6 +153,21 @@ def update_priority(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Ticket not found"
         )
+        
+    if current_user.role == "user":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Users cannot update ticket status directly"
+        )
+    elif current_user.role == "support":
+        if ticket.assigned_to_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Cannot update unassigned tickets"
+            )
+            
+    updated_ticket = update_ticket(session, ticket_id, ticket_update)
+    return updated_ticket
     updated_ticket = update_ticket_priority(session, ticket_id, priority)
     return updated_ticket
 

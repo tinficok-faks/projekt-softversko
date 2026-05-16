@@ -38,6 +38,9 @@ def get_user_by_username(session: Session, username: str) -> User:
 def get_user_by_email(session: Session, email: str) -> User:
     return session.exec(select(User).where(User.email == email)).first()
 
+def get_users_by_role(session: Session, role: str):
+    return session.exec(select(User).where(User.role == role)).all()
+
 def authenticate_user(session: Session, username: str, password: str) -> User:
     user = get_user_by_username(session, username)
     if not user or not verify_password(password, user.password):
