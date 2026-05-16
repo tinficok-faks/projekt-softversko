@@ -73,6 +73,13 @@ class TicketCreate(SQLModel):
     description: str
     priority: Optional[str] = "medium"
 
+class AttachmentRead(SQLModel):
+    id: str
+    file_name: str
+    file_path: str
+    ticket_id: str
+    created_at: datetime
+
 class TicketRead(SQLModel):
     id: str
     title: str
@@ -83,6 +90,8 @@ class TicketRead(SQLModel):
     updated_at: datetime
     created_by_id: str
     assigned_to_id: Optional[str] = None
+    attachments: List[AttachmentRead] = []
+    created_by_user: Optional[UserRead] = None
 
 class TicketUpdate(SQLModel):
     title: Optional[str] = None
@@ -106,9 +115,3 @@ class Attachment(AttachmentBase, table=True):
         sa_relationship_kwargs={"overlaps": "attachments"}
     )
 
-class AttachmentRead(SQLModel):
-    id: str
-    file_name: str
-    file_path: str
-    ticket_id: str
-    created_at: datetime
