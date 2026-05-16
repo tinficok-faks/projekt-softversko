@@ -96,6 +96,12 @@ def assign_ticket(
     ticket_id: str,
     ticket_assign: TicketAssign,
     current_admin: User = Depends(get_current_admin),
+@router.patch("/{ticket_id}/status")
+
+def update_status(
+    ticket_id: str,
+    ticket_assign: TicketAssign,
+    current_admin: User = Depends(get_current_admin),
     session: Session = Depends(get_session)
 ):
     ticket = get_ticket_by_id(session, ticket_id)
@@ -109,6 +115,24 @@ def assign_ticket(
     session.commit()
     session.refresh(ticket)
     return ticket
+
+@router.patch("/{ticket_id}", response_model=TicketRead)
+def update_existing_ticket(
+    ticket_id: str,
+    ticket_update: TicketUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    if current_user.role == "support":
+        if ticket.assigned_to_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Can only update assigned tickets"
+            )
+    updated_ticket = update_ticket_status(session, ticket_id, status)
+    return updated_ticket
+
+@router.patch("/{ticket_id}/priority")
 
 @router.patch("/{ticket_id}", response_model=TicketRead)
 def update_existing_ticket(
@@ -138,3 +162,27 @@ def update_existing_ticket(
             
     updated_ticket = update_ticket(session, ticket_id, ticket_update)
     return updated_ticket
+    updated_ticket = update_ticket_priority(session, ticket_id, priority)
+    return updated_ticket
+
+@router.patch("/{ticket_id}/assign")
+
+def assign_to_support(
+    ticket_id: str,
+    assign_data: TicketAssign,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Users cannot update ticket status directly"
+        )
+    elif current_user.role == "support":
+        if ticket.assigned_to_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Cannot update unassigned tickets"
+            )
+            
+    return get_ticket_attachments(session, ticket_id)

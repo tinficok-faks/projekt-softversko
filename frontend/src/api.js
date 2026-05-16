@@ -22,17 +22,9 @@ export async function register(username, email, password) {
 }
 
 export async function login(username, password) {
-  const form = new URLSearchParams();
-  form.append('username', username);
-  form.append('password', password);
-
   const res = await fetch(
-    `${BASE}/api/v1/auth/login`,
-    { 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: form
-    }
+    `${BASE}/api/v1/auth/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+    { method: 'POST' }
   );
   if (!res.ok) {
     const err = await res.json();
