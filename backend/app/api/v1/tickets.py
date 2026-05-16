@@ -12,9 +12,7 @@ from app.crud.ticket import (
     get_user_tickets,
     get_assigned_tickets,
     get_all_tickets,
-    update_ticket_status,
-    update_ticket_priority,
-    assign_ticket
+    update_ticket
 )
 from app.crud.attachment import create_attachment, get_ticket_attachments
 
@@ -102,8 +100,8 @@ def assign_ticket(
 
 def update_status(
     ticket_id: str,
-    status: str,
-    current_user: User = Depends(get_current_support),
+    ticket_assign: TicketAssign,
+    current_admin: User = Depends(get_current_admin),
     session: Session = Depends(get_session)
 ):
     ticket = get_ticket_by_id(session, ticket_id)
@@ -136,17 +134,13 @@ def update_existing_ticket(
 
 @router.patch("/{ticket_id}/priority")
 
-def update_priority(
+@router.patch("/{ticket_id}", response_model=TicketRead)
+def update_existing_ticket(
     ticket_id: str,
-    priority: str,
+    ticket_update: TicketUpdate,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin access required"
-        )
     ticket = get_ticket_by_id(session, ticket_id)
     if not ticket:
         raise HTTPException(
@@ -182,40 +176,13 @@ def assign_to_support(
     if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin access required"
+            detail="Users cannot update ticket status directly"
         )
-    ticket = get_ticket_by_id(session, ticket_id)
-    if not ticket:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Ticket not found"
-        )
-    try:
-        updated_ticket = assign_ticket(session, ticket_id, assign_data.support_user_id)
-        return updated_ticket
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
-@router.get("/{ticket_id}/attachments", response_model=List[AttachmentRead])
-def get_attachments(
-    ticket_id: str,
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session)
-):
-    ticket = get_ticket_by_id(session, ticket_id)
-    if not ticket:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Ticket not found"
-        )
-    if current_user.role == "user":
-        if ticket.created_by_id != current_user.id:
-            raise HTTPException(status_code=403, detail="Forbidden")
     elif current_user.role == "support":
-        if ticket.assigned_to_id != current_user.id and ticket.created_by_id != current_user.id:
-            raise HTTPException(status_code=403, detail="Forbidden")
+        if ticket.assigned_to_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Cannot update unassigned tickets"
+            )
             
     return get_ticket_attachments(session, ticket_id)
