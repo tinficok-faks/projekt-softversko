@@ -91,6 +91,9 @@ def assign_ticket(session: Session, ticket_id: str, support_id: str) -> Optional
     ticket = get_ticket_by_id(session, ticket_id)
     if not ticket:
         return None
+    if ticket.assigned_to_id == support_id:
+        raise ValueError("Ticket is already assigned to this user")
+    
     ticket.assigned_to_id = support_id
     ticket.status = "assigned"
     session.add(ticket)
