@@ -23,25 +23,27 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:80",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 
 app.include_router(auth.router)
 app.include_router(tickets.router)
 app.include_router(users.router)
+app.include_router(admin.router)
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-app.include_router(auth.router)
-app.include_router(tickets.router)
-app.include_router(admin.router)
 
 @app.get("/")
 def root():

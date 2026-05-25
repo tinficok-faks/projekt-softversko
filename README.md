@@ -3,7 +3,7 @@
 
 # projekt-softversko
 
-Full-stack web aplikacija razvijena u sklopu kolegija **Softversko programiranje** na Fakultetu primijenjene matematike i informatike Sveučilišta u Osijeku (FPMIZ Osijek).
+Full-stack web aplikacija razvijena u sklopu kolegija **Softversko programiranje** na Fakultetu primijenjene matematike i informatike Sveučilišta Josipa Jurja Strossmayera u Osijeku (MATHOS).
 
 ---
 
@@ -67,6 +67,10 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### Pokretanje & gašenje Dockera
+docker compose up --build
+docker compose down
 
 ## Suradnici
 

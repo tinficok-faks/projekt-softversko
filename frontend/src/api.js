@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:8000';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 function getToken() {
   return localStorage.getItem('token');
@@ -12,6 +12,7 @@ export async function register(username, email, password) {
   const res = await fetch(`${BASE}/api/v1/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ username, email, password }),
   });
   if (!res.ok) {
@@ -31,6 +32,7 @@ export async function login(username, password) {
     { 
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      credentials: 'include',
       body: form
     }
   );
