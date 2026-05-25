@@ -70,9 +70,10 @@ npm run dev
 ```
 
 ### Pokretanje & gašenje Dockera
+```bash
 docker compose up --build
 docker compose down
-
+```
 ## Suradnici
 
 Projekt je razvijen od strane pet studenata u sklopu kolegija Softversko programiranje. Pogledajte [stranicu suradnika](https://github.com/TonyVargek/projekt-softversko/graphs/contributors) za više detalja.
