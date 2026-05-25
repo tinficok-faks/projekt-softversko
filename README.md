@@ -76,7 +76,7 @@ docker compose down
 ```
 ## Suradnici
 
-Projekt je razvijen od strane pet studenata u sklopu kolegija Softversko programiranje. Pogledajte [stranicu suradnika](https://github.com/TonyVargek/projekt-softversko/graphs/contributors) za više detalja.
+Projekt je razvijen od strane pet studenata u sklopu kolegija Softversko inženjerstvo. Pogledajte [stranicu suradnika](https://github.com/TonyVargek/projekt-softversko/graphs/contributors) za više detalja.
 
 ## Kolegij
 
