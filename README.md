@@ -3,13 +3,13 @@
 
 # projekt-softversko
 
-Full-stack web aplikacija razvijena u sklopu kolegija **Softversko programiranje** na Fakultetu primijenjene matematike i informatike Sveučilišta Josipa Jurja Strossmayera u Osijeku (MATHOS).
+Full-stack web aplikacija razvijena u sklopu kolegija **Softversko inženjerstvo** na Fakultetu primijenjene matematike i informatike Sveučilišta Josipa Jurja Strossmayera u Osijeku (MATHOS).
 
 ---
 
 ## O projektu
 
-Ovaj projekt je full-stack web aplikacija s Python backendom i JavaScript/CSS frontendom. Razvijen je kao projektni zadatak u timu od tri suradnika.
+Ovaj projekt je full-stack web aplikacija s Python backendom i JSX/CSS frontendom. Razvijen je kao projektni zadatak u timu od pet studenata.
 
 ## Struktura projekta
 
@@ -19,6 +19,7 @@ projekt-softversko/
 ├── frontend/      # JSX + CSS web klijent
 ├── .gitignore
 └── README.md
+└── docker-compose.yml
 ```
 
 ## Tehnički stack
