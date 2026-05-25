@@ -1,3 +1,4 @@
+![Tests](https://img.shields.io/badge/tests-17%2F19%20passed-yellow)
 [![Coverage](https://img.shields.io/badge/coverage-76%25-yellowgreen)](backend/htmlcov/index.html)
 
 # projekt-softversko
@@ -54,10 +55,9 @@ projekt-softversko/
 
 ```bash
 cd backend
-python3 -m venv venv
 pip install -r requirements.txt
 python3 init_db.py
-uvicorn app.main:app —reload
+uvicorn app.main:app -—reload
 ```
 
 ### Pokretanje frontenda
