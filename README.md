@@ -80,5 +80,5 @@ Projekt je razvijen od strane pet studenata u sklopu kolegija Softversko inženj
 
 ## Kolegij
 
-**Softversko programiranje**
+**Softversko inženjerstvo**
 Fakultet primijenjene matematike i informatike (MATHOS), Sveučilište Josipa Jurja Strossmayera u Osijeku
